@@ -1,7 +1,9 @@
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
-
+#include <vector>
+#include <fstream>
+#include <time.h>
 using namespace std;
 
 // Definisi fungsi dan prosedur yang digunakan
@@ -9,24 +11,25 @@ bool valid(float b, float c, float d, float e);
 // Mengecek apakah input b, c, d, e merupakan bilangan positif
 void swap(int x, float *b, float *c, float *d, float *e, float r, float s, float t, float u);
 // Mengubah urutan posisi
-void hitung1(int x, int y, float b, float c, float d, float e, int *f);
+void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung2(int x, int y, float b, float c, float d, float e, int *f);
+void hitung2(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung3(int x, int y, float b, float c, float d, float e, int *f);
+void hitung3(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung4(int x, int y, float b, float c, float d, float e, int *f);
+void hitung4(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung5(int x, int y, float b, float c, float d, float e, int *f);
+void hitung5(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung6(int x, int y, float b, float c, float d, float e, int *f);
+void hitung6(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
-void hitung7(int x, int y, float b, float c, float d, float e, int *f);
+void hitung7(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
 //
 void convert(string input, float *value);
 //
 
 int main() {
+	srand(time(0)); // tambah ini biar benaran random
     bool check;
     int i, x, y;
     int count;
@@ -34,10 +37,11 @@ int main() {
     float b, c, d, e;
     float r, s, t, u;
 	float time;
-
+    
+	vector<string> jawaban;
     check = false;
     count = 0;
-
+	
     while (!check) {
 		printf("Pilih masukan: \n");
 		printf("Ketik 1 untuk Input Manual\n");
@@ -56,10 +60,11 @@ int main() {
         }
         else if(input == 2)
         {
-            b = (rand()%12)+1;
-            c = (rand()%12)+1;
-            d = (rand()%12)+1;
-            e = (rand()%12)+1;
+            b = (rand()%13)+1;
+            c = (rand()%13)+1;
+            d = (rand()%13)+1;
+            e = (rand()%13)+1; //harusnya dari 0-12, trus tambah 1 biar 1-13
+			check = valid(b, c, d, e);
         }
 
         if (!check) {
@@ -80,13 +85,13 @@ int main() {
     for (i = 0; i <= 24; i++) {
         for (x = 1; x <= 4; x++) {
             for (y = 1; y <= 4; y++) {
-                hitung1(x, y, b, c, d, e, &count);
-                hitung2(x, y, b, c, d, e, &count);
-                hitung3(x, y, b, c, d, e, &count);
-                hitung4(x, y, b, c, d, e, &count);
-                hitung5(x, y, b, c, d, e, &count);
-				hitung6(x, y, b, c, d, e, &count);
-				hitung7(x, y, b, c, d, e, &count);
+                hitung1(x, y, b, c, d, e, &count, jawaban);
+                hitung2(x, y, b, c, d, e, &count, jawaban);
+                hitung3(x, y, b, c, d, e, &count, jawaban);
+                hitung4(x, y, b, c, d, e, &count, jawaban);
+                hitung5(x, y, b, c, d, e, &count, jawaban);
+				hitung6(x, y, b, c, d, e, &count, jawaban);
+				hitung7(x, y, b, c, d, e, &count, jawaban);
             }
         }
         swap(i, &b, &c, &d, &e, r, s, t, u);
@@ -99,8 +104,29 @@ int main() {
     } else {
         printf("\n  %d solutions found\n", count);
     }
-
-    printf("\n Waktu Eksekusi  = %.3f detik\n", time);
+	// tulis ke layar
+	for (int i = 0; i < jawaban.size(); i++){
+		cout << jawaban[i] << endl;
+	}
+	// tulis ke file
+	string ans, namaFile;
+    printf("Apakah ingin menyimpan solusi ? (y/n)\n");
+	cin >> ans;
+	if (ans == "y") {
+		printf("Masukkan nama file : \n");
+		cin >> namaFile;
+		ofstream file;
+		file.open("../test/" + namaFile);
+		for (int i = 0 ;i < jawaban.size(); i++){
+		file << jawaban[i] << endl;
+	}
+	file.close();
+	}
+	else if (ans == "n") {
+		printf("Hasil tidak disimpan dalam file.");
+	}
+	
+    printf("\n Waktu Eksekusi Program  = %.3f detik\n", time);
 	return 0;
 }
 
@@ -288,9 +314,9 @@ void swap(int x, float *b, float *c, float *d, float *e, float r, float s, float
     }
 }
 
-void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) { //ini
     float hasil1, hasil2, hasil3, hasil4;
-
+	char tmp[20]; //ini
     switch (x) {
         case 1: {
             switch (y) {
@@ -301,19 +327,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f + %0.f + %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f + %.0f\n", (*f), b, c, d, e); //ini
+						jawaban.push_back(string(tmp)); //ini
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f + %0.f - %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f + %0.f * %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f + %0.f / %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     break;
                 }
@@ -324,19 +354,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
                         (*f)++;
-                        printf("%7d. %.0f + %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+                        sprintf(tmp,"%7d. %.0f + %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     break;
                 }
@@ -347,19 +381,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -370,19 +408,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -398,19 +440,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f - %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -421,19 +467,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -444,19 +494,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -467,19 +521,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -495,19 +553,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f * %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -518,19 +580,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f * %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -541,19 +607,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f * %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -564,19 +634,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f * %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -592,19 +666,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f / %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -615,19 +693,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f / %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -638,19 +720,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f / %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -661,19 +747,23 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-						printf("%7d. %.0f / %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -683,9 +773,9 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung2(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
     float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
     switch (x) {
         case 1: {
             switch (y) {
@@ -696,19 +786,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + c) + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -719,19 +813,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + c) - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -742,19 +840,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + c) * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -765,19 +867,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + c) / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -793,19 +899,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - c) + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -816,19 +926,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - c) - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -839,19 +953,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - c) * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -862,19 +980,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - c) / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -889,15 +1011,18 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil3 = (b * c) + d * e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -908,19 +1033,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * c) - c / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -931,19 +1060,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * c) * c / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -954,19 +1087,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * c) / c / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -982,19 +1119,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / c) + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) + %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) + %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) + %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) + %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1005,19 +1146,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / c) - d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) - %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) - %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) - %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) - %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1028,19 +1173,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / c) * d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) * %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) * %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) * %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) * %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1051,19 +1200,23 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / c) / d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) / %.0f + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) / %.0f - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) / %.0f * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / %.0f) / %.0f / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                  }
@@ -1073,9 +1226,9 @@ void hitung2(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung3(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
     float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
     switch (x) {
         case 1: {
             switch (y) {
@@ -1086,19 +1239,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + (c + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1109,19 +1266,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + (c - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1132,19 +1293,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + (c * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1155,19 +1320,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + (c / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1183,19 +1352,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - (c + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1206,19 +1379,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - (c - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1229,19 +1406,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - (c * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1252,19 +1433,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - (c / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1280,19 +1465,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * (c + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1303,19 +1492,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * (c - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1326,19 +1519,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * (c * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1349,19 +1546,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * (c / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1377,19 +1578,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / (c + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1400,19 +1605,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / (c - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1423,19 +1632,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / (c * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1446,19 +1659,23 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / (c / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / (%.0f / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1468,9 +1685,9 @@ void hitung3(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung4(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
     float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
     switch (x) {
         case 1: {
             switch (y) {
@@ -1481,19 +1698,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c + (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1504,19 +1725,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c - (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1527,19 +1752,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c * (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1550,19 +1779,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b + c / (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f + %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f + %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1578,19 +1811,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c + (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1601,19 +1838,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c - (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1624,19 +1865,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c * (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1647,19 +1892,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b - c / (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f - %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f - %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1675,19 +1924,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c + (d / e);
                      if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1698,19 +1951,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c - (d / e);
                      if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1721,19 +1978,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c * (d / e);
                      if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1744,19 +2005,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b * c / (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f * %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f * %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1772,19 +2037,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c + (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1795,19 +2064,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c - (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1818,19 +2091,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c * (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1841,19 +2118,23 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = b / c / (d / e);
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. %.0f / %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. %.0f / %.0f / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1863,9 +2144,9 @@ void hitung4(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung5(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
     float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
     switch (x) {
         case 1: {
             switch (y) {
@@ -1876,19 +2157,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + (c + d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1899,19 +2184,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + (c - d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1922,19 +2211,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + (c * d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1945,19 +2238,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b + (c / d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -1973,39 +2270,44 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - (c + d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
                 case 2: {
                     hasil1 = (b - (c - d)) + e;
                     hasil2 = (b - (c - d)) - e;
-                    
                     hasil4 = (b - (c - d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
-					
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2016,19 +2318,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - (c * d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2039,19 +2345,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b - (c / d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2067,19 +2377,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * (c + d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2090,19 +2404,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * (c - d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2113,19 +2431,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * (c * d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2136,19 +2458,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b * (c / d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f * (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f * (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2164,19 +2490,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / (c + d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f + %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f + %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f + %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f + %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2187,19 +2517,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / (c - d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f - %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f - %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f - %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f - %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2210,19 +2544,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / (c * d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f * %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f * %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f * %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f * %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2233,19 +2571,23 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = (b / (c / d)) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f / %.0f)) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f / %.0f)) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f / %.0f)) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f / (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f / (%.0f / %.0f)) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2255,9 +2597,9 @@ void hitung5(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung6(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
     float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
     switch (x) {
         case 1: {
             switch (y) {
@@ -2268,19 +2610,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b + c) + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2291,19 +2637,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b + c) - d) / e;
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					
                 }
@@ -2314,19 +2664,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b + c) * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2337,19 +2691,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b + c) / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f + %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f + %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2365,22 +2723,26 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b - c) + d) / e;
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					
                 }
@@ -2389,12 +2751,14 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b - c) - d) / e;
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 						break;
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2405,19 +2769,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b - c) * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2428,19 +2796,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b - c) / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f - %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f - %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2456,19 +2828,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b * c) + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2479,19 +2855,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b * c) - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2503,19 +2883,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b * c) / d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) / %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) / %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) / %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f * %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f * %.0f) / %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2531,19 +2915,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b / c) + d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) + %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) + %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) + %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) + %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2554,19 +2942,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b / c) - d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) - %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) - %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) - %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) - %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2577,19 +2969,23 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
                     hasil4 = ((b / c) * d) / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) * %.0f) + %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) * %.0f) - %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) * %.0f) * %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. ((%.0f / %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. ((%.0f / %.0f) * %.0f) / %.0f\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
                 }
@@ -2599,9 +2995,9 @@ void hitung6(int x, int y, float b, float c, float d, float e, int *f) {
     }
 }
 
-void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
+void hitung7(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) {
 	float hasil1, hasil2, hasil3, hasil4;
-
+    char tmp[20];
 	switch (x) {
 		case 1: {
 			switch (y) {
@@ -2610,11 +3006,13 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil2 = (b + c) + (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2623,11 +3021,13 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil2 = (b + c) - (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2638,19 +3038,23 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil4 = (b + c) * (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2661,19 +3065,23 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil4 = (b + c) / (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f + %.0f) / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f + %.0f) / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2687,11 +3095,13 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil2 = (b - c) + (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) + (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) + (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2700,11 +3110,13 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil2 = (b - c) - (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) - (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) - (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2715,19 +3127,23 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil4 = (b - c) * (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) * (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) * (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
@@ -2738,19 +3154,23 @@ void hitung7(int x, int y, float b, float c, float d, float e, int *f) {
 					hasil4 = (b - c) / (d / e);
 					if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / (%.0f + %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / (%.0f + %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / (%.0f - %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / (%.0f - %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil3 - 24) >= -0.00001) && ((hasil3 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / (%.0f * %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / (%.0f * %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					if (((hasil4 - 24) >= -0.00001) && ((hasil4 - 24) <= 0.00001)) {
 						(*f)++;
-						printf("%7d. (%.0f - %.0f) / (%.0f / %.0f)\n", (*f), b, c, d, e);
+						sprintf(tmp,"%7d. (%.0f - %.0f) / (%.0f / %.0f)\n", (*f), b, c, d, e);
+                        jawaban.push_back(string(tmp));
 					}
 					break;
 				}
