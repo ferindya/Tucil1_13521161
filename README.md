@@ -10,7 +10,7 @@ Pada awal permainan moderator atau salah satu pemain mengambil 4 kartu dari dek 
 * Disarankan agar menjalankan program dalam Terminal OS Windows.
 
 ## Cara Menggunakan Program
-1. Progam dijalankan cukup dengan mengeksekusi file main.cpp yang terdapat dalam folder src. File main.cpp dapat dijalankan cukup dengan double click file tersebut. Alternatifnya juga bisa membuka terminal pada direktori folder src, lalu menjalankan perintah ./main.cpp
+1. Progam dijalankan cukup dengan mengeksekusi file main.exe yang terdapat dalam folder bin. File main.exe dapat dijalankan cukup dengan double click file tersebut. Alternatifnya juga bisa membuka terminal pada direktori folder bin, lalu menjalankan perintah ./main.exe
 2. Program akan meminta nama input 4 angka atau huruf yang akan dicari solusinya. Silahkan input dengan benar dan lengkap, misalnya A 8 9 Q (dengan spasi). Apabila input salah atau tidak ditemukan, maka program akan mengulangi meminta input hingga benar.
 3. Program akan menampilkan solusi yang menghasilkan nilai akhir 24 dari tiap kombinasi 4 angka atau huruf yang diinput.
 4. Program akan bertanya apakah pengguna ingin menyimpan solusi. Apabila tidak menyimpan cukup input "n", dan apabila ingin menyimpan solusi dalam file cukup input "y" (tanpa tanda kutip) kemudian program akan meminta input nama file (dalam format .txt).
