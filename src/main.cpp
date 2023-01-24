@@ -115,6 +115,7 @@ int main() {
 	if (ans == "y") {
 		printf("Masukkan nama file : \n");
 		cin >> namaFile;
+		printf("Hasil berhasil disimpan dalam file.\n");
 		ofstream file;
 		file.open("../test/" + namaFile);
 		for (int i = 0 ;i < jawaban.size(); i++){
@@ -123,10 +124,10 @@ int main() {
 	file.close();
 	}
 	else if (ans == "n") {
-		printf("Hasil tidak disimpan dalam file.");
+		printf("Hasil tidak disimpan dalam file.\n");
 	}
 	
-    printf("\n Waktu Eksekusi Program  = %.3f detik\n", time);
+    printf("Waktu Eksekusi Program  = %.3f detik\n", time);
 	return 0;
 }
 
