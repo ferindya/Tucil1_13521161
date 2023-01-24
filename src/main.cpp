@@ -132,7 +132,7 @@ int main() {
 		printf("Hasil tidak disimpan dalam file.\n");
 	}
 	
-    printf("Waktu Eksekusi Program  = %.3f detik\n", time);
+    printf("Waktu Eksekusi Program  = %.5f detik\n", time);
 	return 0;
 }
 
