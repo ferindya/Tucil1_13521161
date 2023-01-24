@@ -1,3 +1,8 @@
+// Nama : Ferindya Aulia Berlianty
+// NIM : 13521161
+// Kelas : K 01
+// Deskripsi : Tugas Kecil 1 Penyelesaian Permainan Kartu 24 dengan Algoritma Brute Force
+
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
@@ -12,24 +17,24 @@ bool valid(float b, float c, float d, float e);
 void swap(int x, float *b, float *c, float *d, float *e, float r, float s, float t, float u);
 // Mengubah urutan posisi
 void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung b ... c ... d ... e
 void hitung2(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung (b ... c) ... d ... e
 void hitung3(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung b ... (c ... d) ... e
 void hitung4(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung b ... c ... (d ... e)
 void hitung5(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung (b ... (c ... d)) ... e
 void hitung6(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung ((b ... c) ... d) ... e
 void hitung7(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban);
-//
+// menghitung (b ... c) ... (d ... e)
 void convert(string input, float *value);
-//
+// mengubah masukan string (kartu) menjadi integer
 
 int main() {
-	srand(time(0)); // tambah ini biar benaran random
+	srand(time(0));
     bool check;
     int i, x, y;
     int count;
@@ -63,7 +68,7 @@ int main() {
             b = (rand()%13)+1;
             c = (rand()%13)+1;
             d = (rand()%13)+1;
-            e = (rand()%13)+1; //harusnya dari 0-12, trus tambah 1 biar 1-13
+            e = (rand()%13)+1;
 			check = valid(b, c, d, e);
         }
 
@@ -113,7 +118,7 @@ int main() {
     printf("Apakah ingin menyimpan solusi ? (y/n)\n");
 	cin >> ans;
 	if (ans == "y") {
-		printf("Masukkan nama file : \n");
+		printf("Masukkan nama file (dengan format.txt): \n");
 		cin >> namaFile;
 		printf("Hasil berhasil disimpan dalam file.\n");
 		ofstream file;
@@ -145,9 +150,6 @@ void convert(string input, float *value)
     }
     else if (input == "K") {
        *value = 13;
-    }
-	 else if (input == "1") {
-       *value = 1;
     }
     else if (input == "2") {
        *value = 2;
@@ -315,9 +317,9 @@ void swap(int x, float *b, float *c, float *d, float *e, float r, float s, float
     }
 }
 
-void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) { //ini
+void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<string> &jawaban) { 
     float hasil1, hasil2, hasil3, hasil4;
-	char tmp[20]; //ini
+	char tmp[20]; 
     switch (x) {
         case 1: {
             switch (y) {
@@ -328,8 +330,8 @@ void hitung1(int x, int y, float b, float c, float d, float e, int *f, vector<st
                     hasil4 = b + c + d / e;
                     if (((hasil1 - 24) >= -0.00001) && ((hasil1 - 24) <= 0.00001)) {
                         (*f)++;
-                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f + %.0f\n", (*f), b, c, d, e); //ini
-						jawaban.push_back(string(tmp)); //ini
+                        sprintf(tmp,"%7d. %.0f + %.0f + %0.f + %.0f\n", (*f), b, c, d, e); 
+						jawaban.push_back(string(tmp)); 
                     }
                     if (((hasil2 - 24) >= -0.00001) && ((hasil2 - 24) <= 0.00001)) {
                         (*f)++;
